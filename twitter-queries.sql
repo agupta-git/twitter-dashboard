@@ -36,7 +36,8 @@ SELECT DISTINCT
   a.name as name,
   a.username as username,
   a.tweet_id as tweet_id,
-  FROM_UTC_TIMESTAMP(UNIX_TIMESTAMP(a.created_at, "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'") * 1000, 'PST') as created_at,
+  --FROM_UTC_TIMESTAMP(UNIX_TIMESTAMP(a.created_at, "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'") * 1000, 'PST') as created_at,
+  cast(concat(concat(substr(a.created_at,1,10),' '), substr(a.created_at,12,15)) as timestamp) as created_at,
   a.lang as lang,
   b.lang_name as lang_name,
   a.text as text
@@ -50,7 +51,8 @@ CREATE VIEW IF NOT EXISTS twtr.tweets_by_minute AS
 WITH tweets_custom as (
   SELECT
     *,
-    from_unixtime(UNIX_TIMESTAMP(created_at, "yyyy-MM-dd HH:mm:ss"),"yyyy-MM-dd HH:mm") as date_hhmm
+    --from_unixtime(UNIX_TIMESTAMP(created_at, "yyyy-MM-dd HH:mm:ss"),"yyyy-MM-dd HH:mm") as date_hhmm
+    date_format(created_at, "yyyy-MM-dd HH:mm") as date_hhmm
   FROM twtr.twtr_view
 )
 SELECT
